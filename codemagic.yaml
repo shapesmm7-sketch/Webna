@@ -10,9 +10,9 @@ workflows:
       - name: Install dependencies
         script: |
           npm install --legacy-peer-deps
-      - name: Build web application
+      - name: Build web application and prepare Android assets
         script: |
-          npm run build
+          npm run android:prepare
       - name: Sync Android project
         script: |
           npx cap sync android
