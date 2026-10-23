@@ -1,0 +1,6 @@
+{
+  "name": "WebNa Browser",
+  "description": "Fast mobile browser with search engines, worldwide news, saved links and media player.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
