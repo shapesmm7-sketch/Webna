@@ -21,8 +21,8 @@ if (!fs.existsSync(androidAssetsDir)) {
   fs.mkdirSync(androidAssetsDir, { recursive: true });
 }
 
-// Find built JS and CSS chunks
-let scriptTag = '<script type="module" src="/src/main.tsx"></script>';
+// Find built JS and CSS chunks using relative paths for Capacitor Android
+let scriptTag = '<script type="module" src="./src/main.tsx"></script>';
 let cssTags = "";
 
 if (fs.existsSync(assetsDir)) {
@@ -36,10 +36,10 @@ if (fs.existsSync(assetsDir)) {
   );
 
   if (stylesCss) {
-    cssTags = `<link rel="stylesheet" href="/assets/${stylesCss}">`;
+    cssTags = `<link rel="stylesheet" href="./assets/${stylesCss}">`;
   }
   if (mainJs) {
-    scriptTag = `${routesJs ? `<script type="module" src="/assets/${routesJs}"></script>` : ""}<script type="module" src="/assets/${mainJs}"></script>`;
+    scriptTag = `${routesJs ? `<script type="module" src="./assets/${routesJs}"></script>` : ""}<script type="module" src="./assets/${mainJs}"></script>`;
   }
 }
 
@@ -62,5 +62,5 @@ const htmlTemplate = `<!doctype html>
 
 fs.writeFileSync(path.join(publicDir, "index.html"), htmlTemplate, "utf-8");
 console.log(
-  "Successfully prepared .output/public/index.html for Capacitor Android!",
+  "Successfully prepared .output/public/index.html with relative paths for Capacitor Android!",
 );

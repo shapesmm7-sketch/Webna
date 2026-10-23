@@ -14,6 +14,7 @@ export default defineConfig({
     server: { entry: "server" },
   },
   vite: {
+    base: "./",
     plugins: [
       {
         name: "webna-dev-proxy",
