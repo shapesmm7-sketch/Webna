@@ -15,7 +15,7 @@
     "cap:sync": "cap sync android",
     "cap:build": "npm run build && cap sync android",
     "cap:open": "cap open android",
-    "android:prepare": "node scripts/prepare-android.mjs",
+    "android:prepare": "npm run build && node scripts/prepare-android.mjs",
     "android:build": "npm run build && node scripts/prepare-android.mjs"
   },
   "overrides": {

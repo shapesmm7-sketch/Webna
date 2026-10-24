@@ -64,8 +64,18 @@ export default {
       if (url.pathname === "/api/proxy") {
         return await handleProxyFetchRequest(request);
       }
+
+      // Ensure Accept header includes */* so TanStack Start's SSR handler does not reject server functions with 406
+      let req = request;
+      const accept = request.headers.get("accept");
+      if (accept && !accept.includes("*/*") && !accept.includes("text/html")) {
+        const newHeaders = new Headers(request.headers);
+        newHeaders.set("accept", `${accept}, */*`);
+        req = new Request(request, { headers: newHeaders });
+      }
+
       const handler = await getServerEntry();
-      const response = await handler.fetch(request, env, ctx);
+      const response = await handler.fetch(req, env, ctx);
       return await normalizeCatastrophicSsrResponse(response);
     } catch (error) {
       console.error(error);

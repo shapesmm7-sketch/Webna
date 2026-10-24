@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import {
   Trash2,
   X,
@@ -24,6 +24,9 @@ import {
   ExternalLink,
   Check,
   EyeOff,
+  Info,
+  FolderInput,
+  Pencil,
 } from "lucide-react";
 import { toast } from "sonner";
 import { BottomTabs, type TabName } from "@/components/BottomTabs";
@@ -74,7 +77,7 @@ const host = (u: string) => {
   }
 };
 
-const DIAL = [
+const DEFAULT_DIAL = [
   { t: "Google", u: "https://www.google.com/?igu=1" },
   { t: "Wikipedia", u: "https://en.wikipedia.org" },
   { t: "OpenStreetMap", u: "https://www.openstreetmap.org/export/embed.html" },
@@ -84,6 +87,63 @@ const DIAL = [
   { t: "Bing", u: "https://www.bing.com" },
   { t: "DuckDuckGo", u: "https://html.duckduckgo.com/html/" },
 ];
+
+const DEFAULT_CATEGORIES: Record<string, { t: string; u: string }[]> = {
+  Social: [
+    { t: "YouTube", u: "https://youtube.com" },
+    { t: "Reddit", u: "https://reddit.com" },
+    { t: "Twitter / X", u: "https://x.com" },
+    { t: "Instagram", u: "https://instagram.com" },
+  ],
+  Media: [
+    { t: "Netflix", u: "https://netflix.com" },
+    { t: "Spotify", u: "https://spotify.com" },
+    { t: "Twitch", u: "https://twitch.tv" },
+    { t: "SoundCloud", u: "https://soundcloud.com" },
+  ],
+  News: [
+    { t: "BBC News", u: "https://bbc.com" },
+    { t: "CNN", u: "https://cnn.com" },
+    { t: "Reuters", u: "https://reuters.com" },
+  ],
+};
+
+function useLongPress(onLongPress: () => void, onClick: () => void, ms = 450) {
+  const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
+  const firedRef = useRef(false);
+
+  const start = (e: React.SyntheticEvent) => {
+    firedRef.current = false;
+    const t = setTimeout(() => {
+      firedRef.current = true;
+      onLongPress();
+    }, ms);
+    setTimer(t);
+  };
+
+  const clear = () => {
+    if (timer) clearTimeout(timer);
+    setTimer(null);
+  };
+
+  return {
+    onMouseDown: start,
+    onMouseUp: clear,
+    onMouseLeave: clear,
+    onTouchStart: start,
+    onTouchEnd: () => {
+      clear();
+      if (!firedRef.current) {
+        onClick();
+      }
+    },
+    onTouchCancel: clear,
+    onContextMenu: (e: React.MouseEvent) => {
+      e.preventDefault();
+      onLongPress();
+    },
+  };
+}
 
 function useStored<T>(k: string, init: T) {
   const [v, setV] = useState<T>(init);
@@ -299,25 +359,6 @@ function App() {
       }
     }
   }, [engines, setEngines]);
-  const DEFAULT_CATEGORIES: Record<string, { t: string; u: string }[]> = {
-    Social: [
-      { t: "YouTube", u: "https://youtube.com" },
-      { t: "Reddit", u: "https://reddit.com" },
-      { t: "Twitter / X", u: "https://x.com" },
-      { t: "Instagram", u: "https://instagram.com" },
-    ],
-    Media: [
-      { t: "Netflix", u: "https://netflix.com" },
-      { t: "Spotify", u: "https://spotify.com" },
-      { t: "Twitch", u: "https://twitch.tv" },
-      { t: "SoundCloud", u: "https://soundcloud.com" },
-    ],
-    News: [
-      { t: "BBC News", u: "https://bbc.com" },
-      { t: "CNN", u: "https://cnn.com" },
-      { t: "Reuters", u: "https://reuters.com" },
-    ],
-  };
 
   const { t } = useAppLanguage();
   const [engine, setEngine] = useStored<string>("webna-engine", "Google");
@@ -327,6 +368,34 @@ function App() {
   const [addingCategory, setAddingCategory] = useState(false);
   const [newCategory, setNewCategory] = useState("");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [dial, setDial] = useStored<{ t: string; u: string }[]>(
+    "webna-dial",
+    DEFAULT_DIAL,
+  );
+
+  const [shortcutMenu, setShortcutMenu] = useState<{
+    t: string;
+    u: string;
+    source: "dial" | "category";
+    categoryName?: string;
+    index?: number;
+  } | null>(null);
+  const [categoryMenu, setCategoryMenu] = useState<string | null>(null);
+  const [appInfoModal, setAppInfoModal] = useState<{
+    t: string;
+    u: string;
+  } | null>(null);
+  const [moveCategoryModal, setMoveCategoryModal] = useState<{
+    t: string;
+    u: string;
+    source: "dial" | "category";
+    categoryName?: string;
+    index?: number;
+  } | null>(null);
+  const [editCategoryModal, setEditCategoryModal] = useState<string | null>(
+    null,
+  );
+  const [editCategoryNewName, setEditCategoryNewName] = useState("");
 
   const safeCategories = useMemo<
     Record<string, { t: string; u: string }[]>
@@ -554,16 +623,38 @@ function App() {
         <div className="mx-auto max-w-xl px-4 pb-28">
           <div className="sticky top-0 z-30 -mx-4 bg-background px-4 pb-3 pt-4">
             {tab === "home" && (
-              <div className="relative mb-3 flex items-center justify-center">
+              <div className="relative mb-3 flex items-center justify-between">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsIncognito(!isIncognito);
+                    toast.success(
+                      !isIncognito
+                        ? "Incognito mode enabled"
+                        : "Incognito mode disabled",
+                    );
+                  }}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all border ${
+                    isIncognito
+                      ? "bg-slate-900 text-white border-slate-700 shadow-sm"
+                      : "bg-card text-muted-foreground hover:text-foreground border-border"
+                  }`}
+                  aria-label="Toggle Incognito Mode"
+                  title="Toggle Incognito Mode"
+                >
+                  <EyeOff className="size-3.5" />
+                  <span>{isIncognito ? "Incognito On" : "Incognito"}</span>
+                </button>
                 <h1 className="text-2xl font-bold tracking-tight text-brand">
                   WebNa
                 </h1>
                 <button
+                  type="button"
                   onClick={() => setHomeMenu(true)}
-                  className="absolute right-0 p-2 text-muted-foreground"
-                  aria-label="Settings"
+                  className="p-1 text-muted-foreground hover:text-foreground transition-colors"
+                  aria-label="Menu"
                 >
-                  <div className="size-6 rounded-full bg-card flex items-center justify-center">
+                  <div className="size-7 rounded-full bg-card border border-border flex items-center justify-center text-sm shadow-xs">
                     ⚙️
                   </div>
                 </button>
@@ -615,21 +706,21 @@ function App() {
                   {t("shortcuts")}
                 </h2>
                 <div className="grid grid-cols-4 gap-4">
-                  {DIAL.map((d) => (
-                    <button
-                      key={d.u}
+                  {dial.map((d, i) => (
+                    <ShortcutItem
+                      key={d.u + i}
+                      title={d.t}
+                      url={d.u}
                       onClick={() => open(d.u)}
-                      className="flex flex-col items-center gap-1"
-                    >
-                      <span className="flex size-14 items-center justify-center rounded-2xl bg-card shadow-sm">
-                        <img
-                          src={`https://www.google.com/s2/favicons?domain=${host(d.u)}&sz=64`}
-                          alt=""
-                          className="size-7"
-                        />
-                      </span>
-                      <span className="w-full truncate text-xs">{d.t}</span>
-                    </button>
+                      onLongPress={() =>
+                        setShortcutMenu({
+                          t: d.t,
+                          u: d.u,
+                          source: "dial",
+                          index: i,
+                        })
+                      }
+                    />
                   ))}
                 </div>
               </section>
@@ -701,66 +792,44 @@ function App() {
                 {/* Horizontal categories without white background */}
                 <div className="no-scrollbar -mx-4 mb-3 flex gap-2 overflow-x-auto px-4 py-1">
                   {Object.keys(safeCategories).map((cat) => (
-                    <button
+                    <CategoryItem
                       key={cat}
+                      category={cat}
+                      isActive={activeCategory === cat}
                       onClick={() =>
                         setActiveCategory(activeCategory === cat ? null : cat)
                       }
-                      className={`shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition-all ${
-                        activeCategory === cat
-                          ? "bg-brand text-brand-foreground font-semibold shadow-xs"
-                          : "text-muted-foreground hover:text-foreground bg-transparent"
-                      }`}
-                    >
-                      {cat}
-                    </button>
+                      onLongPress={() => setCategoryMenu(cat)}
+                    />
                   ))}
                 </div>
                 {activeCategory && (
                   <div className="grid grid-cols-4 gap-4">
                     {(safeCategories[activeCategory] || []).map((s, i) => (
-                      <div
-                        key={i}
-                        className="relative group flex flex-col items-center"
-                      >
-                        <button
-                          onClick={() => open(s.u)}
-                          className="flex flex-col items-center gap-1 w-full"
-                        >
-                          <span className="flex size-14 items-center justify-center rounded-2xl bg-card shadow-sm border border-border/40 group-hover:border-brand/40 transition-colors">
-                            <img
-                              src={`https://www.google.com/s2/favicons?domain=${host(s.u)}&sz=64`}
-                              alt=""
-                              className="size-7"
-                              onError={(e) => {
-                                (e.target as HTMLElement).style.display =
-                                  "none";
-                              }}
-                            />
-                          </span>
-                          <span className="w-full truncate text-xs text-center">
-                            {s.t}
-                          </span>
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            const current =
-                              safeCategories[activeCategory] || [];
-                            const updated = current.filter(
-                              (_, idx) => idx !== i,
-                            );
-                            setCategories({
-                              ...safeCategories,
-                              [activeCategory]: updated,
-                            });
-                          }}
-                          title="Remove shortcut"
-                          className="absolute -top-1 -right-1 hidden group-hover:flex size-5 items-center justify-center rounded-full bg-muted text-muted-foreground hover:bg-destructive hover:text-destructive-foreground text-[10px]"
-                        >
-                          ✕
-                        </button>
-                      </div>
+                      <ShortcutItem
+                        key={s.u + i}
+                        title={s.t}
+                        url={s.u}
+                        onClick={() => open(s.u)}
+                        onLongPress={() =>
+                          setShortcutMenu({
+                            t: s.t,
+                            u: s.u,
+                            source: "category",
+                            categoryName: activeCategory,
+                            index: i,
+                          })
+                        }
+                        showRemove={true}
+                        onRemove={() => {
+                          const current = safeCategories[activeCategory] || [];
+                          const updated = current.filter((_, idx) => idx !== i);
+                          setCategories({
+                            ...safeCategories,
+                            [activeCategory]: updated,
+                          });
+                        }}
+                      />
                     ))}
                     <button
                       onClick={() => {
@@ -1504,7 +1573,470 @@ function App() {
           </div>
         </div>
       )}
+
+      {/* Shortcut Context Menu Modal */}
+      {shortcutMenu && (
+        <div
+          className="fixed inset-0 z-50 flex items-end bg-foreground/40 backdrop-blur-xs animate-in fade-in duration-200"
+          onClick={() => setShortcutMenu(null)}
+        >
+          <div
+            className="w-full rounded-t-3xl bg-card p-4 pb-10 shadow-2xl animate-in slide-in-from-bottom duration-300 space-y-1"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between pb-3 mb-2 border-b">
+              <div className="flex items-center gap-3">
+                <span className="flex size-10 items-center justify-center rounded-xl bg-muted">
+                  <img
+                    src={`https://www.google.com/s2/favicons?domain=${host(shortcutMenu.u)}&sz=32`}
+                    alt=""
+                    className="size-5"
+                  />
+                </span>
+                <div className="min-w-0">
+                  <h4 className="font-semibold text-sm truncate max-w-[240px]">
+                    {shortcutMenu.t}
+                  </h4>
+                  <p className="text-xs text-muted-foreground truncate max-w-[240px]">
+                    {shortcutMenu.u}
+                  </p>
+                </div>
+              </div>
+              <button onClick={() => setShortcutMenu(null)} aria-label="Close">
+                <X className="size-5 text-muted-foreground" />
+              </button>
+            </div>
+
+            <button
+              onClick={() => {
+                const item = shortcutMenu;
+                setShortcutMenu(null);
+                setAppInfoModal({ t: item.t, u: item.u });
+              }}
+              className="flex w-full items-center gap-3 rounded-xl p-3 text-left hover:bg-muted font-medium text-sm transition-colors"
+            >
+              <Info className="size-5 text-brand" />
+              <span>App Info</span>
+            </button>
+
+            <button
+              onClick={() => {
+                const u = shortcutMenu.u;
+                const t = shortcutMenu.t;
+                setShortcutMenu(null);
+                const newTab: BrowserTab = {
+                  id: `tab-${Date.now()}`,
+                  url: u,
+                  title: t,
+                  active: true,
+                };
+                const newTabs = [
+                  ...tabs.map((x) => ({ ...x, active: false })),
+                  newTab,
+                ];
+                setTabs(newTabs);
+                setActiveTabId(newTab.id);
+                localStorage.setItem(
+                  "webna-browser-tabs",
+                  JSON.stringify(newTabs),
+                );
+                setTab("home");
+                setPanel(null);
+                open(u);
+              }}
+              className="flex w-full items-center gap-3 rounded-xl p-3 text-left hover:bg-muted font-medium text-sm transition-colors"
+            >
+              <ExternalLink className="size-5 text-brand" />
+              <span>Open in New Tab</span>
+            </button>
+
+            <button
+              onClick={() => {
+                const item = shortcutMenu;
+                setShortcutMenu(null);
+                setMoveCategoryModal(item);
+              }}
+              className="flex w-full items-center gap-3 rounded-xl p-3 text-left hover:bg-muted font-medium text-sm transition-colors"
+            >
+              <FolderInput className="size-5 text-brand" />
+              <span>Move to Category</span>
+            </button>
+
+            <button
+              onClick={() => {
+                const item = shortcutMenu;
+                setShortcutMenu(null);
+                const exists = bookmarks.some((b) => b.url === item.u);
+                if (!exists) {
+                  setBookmarks([
+                    { url: item.u, title: item.t, at: Date.now() },
+                    ...bookmarks,
+                  ]);
+                  toast.success("Added to bookmarks");
+                } else {
+                  toast.info("Already bookmarked");
+                }
+              }}
+              className="flex w-full items-center gap-3 rounded-xl p-3 text-left hover:bg-muted font-medium text-sm transition-colors"
+            >
+              <Star className="size-5 text-brand" />
+              <span>Bookmark</span>
+            </button>
+
+            <button
+              onClick={() => {
+                const item = shortcutMenu;
+                setShortcutMenu(null);
+                if (item.source === "dial") {
+                  const updated = dial.filter((_, idx) => idx !== item.index);
+                  setDial(updated);
+                  toast.success("Shortcut removed");
+                } else if (item.source === "category" && item.categoryName) {
+                  const current = safeCategories[item.categoryName] || [];
+                  const updated = current.filter(
+                    (_, idx) => idx !== item.index,
+                  );
+                  setCategories({
+                    ...safeCategories,
+                    [item.categoryName]: updated,
+                  });
+                  toast.success("Shortcut removed");
+                }
+              }}
+              className="flex w-full items-center gap-3 rounded-xl p-3 text-left hover:bg-muted font-medium text-sm transition-colors text-destructive"
+            >
+              <Trash2 className="size-5 text-destructive" />
+              <span>Delete</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Category Context Menu Modal */}
+      {categoryMenu && (
+        <div
+          className="fixed inset-0 z-50 flex items-end bg-foreground/40 backdrop-blur-xs animate-in fade-in duration-200"
+          onClick={() => setCategoryMenu(null)}
+        >
+          <div
+            className="w-full rounded-t-3xl bg-card p-4 pb-10 shadow-2xl animate-in slide-in-from-bottom duration-300 space-y-1"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between pb-3 mb-2 border-b">
+              <h4 className="font-semibold text-sm">
+                Category: {categoryMenu}
+              </h4>
+              <button onClick={() => setCategoryMenu(null)} aria-label="Close">
+                <X className="size-5 text-muted-foreground" />
+              </button>
+            </div>
+
+            <button
+              onClick={() => {
+                const cat = categoryMenu;
+                setCategoryMenu(null);
+                setEditCategoryModal(cat);
+                setEditCategoryNewName(cat);
+              }}
+              className="flex w-full items-center gap-3 rounded-xl p-3 text-left hover:bg-muted font-medium text-sm transition-colors"
+            >
+              <Pencil className="size-5 text-brand" />
+              <span>Edit</span>
+            </button>
+
+            <button
+              onClick={() => {
+                const cat = categoryMenu;
+                setCategoryMenu(null);
+                const copy = { ...safeCategories };
+                delete copy[cat];
+                setCategories(copy);
+                if (activeCategory === cat) {
+                  setActiveCategory(null);
+                }
+                toast.success("Category deleted");
+              }}
+              className="flex w-full items-center gap-3 rounded-xl p-3 text-left hover:bg-muted font-medium text-sm transition-colors text-destructive"
+            >
+              <Trash2 className="size-5 text-destructive" />
+              <span>Delete</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* App Info Modal */}
+      {appInfoModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in duration-150"
+          onClick={() => setAppInfoModal(null)}
+        >
+          <div
+            className="w-full max-w-sm rounded-2xl bg-card p-5 shadow-2xl border border-border space-y-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between">
+              <h3 className="font-semibold text-base">App / Site Info</h3>
+              <button onClick={() => setAppInfoModal(null)} aria-label="Close">
+                <X className="size-5 text-muted-foreground" />
+              </button>
+            </div>
+            <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/50">
+              <img
+                src={`https://www.google.com/s2/favicons?domain=${host(appInfoModal.u)}&sz=64`}
+                alt=""
+                className="size-10 rounded-lg"
+              />
+              <div className="min-w-0">
+                <h4 className="font-bold text-sm truncate">{appInfoModal.t}</h4>
+                <p className="text-xs text-muted-foreground truncate">
+                  {host(appInfoModal.u)}
+                </p>
+              </div>
+            </div>
+            <div className="space-y-2 text-xs text-muted-foreground bg-card p-3 rounded-xl border">
+              <div className="flex justify-between">
+                <span>Full URL:</span>
+                <span className="font-mono text-[11px] truncate max-w-[200px]">
+                  {appInfoModal.u}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span>Connection:</span>
+                <span className="text-brand font-medium">Secure (HTTPS)</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Cookie & Tracking Protection:</span>
+                <span className="text-brand font-medium">Active</span>
+              </div>
+            </div>
+            <button
+              onClick={() => setAppInfoModal(null)}
+              className="w-full rounded-xl bg-brand py-2.5 text-xs font-semibold text-brand-foreground"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Move to Category Modal */}
+      {moveCategoryModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in duration-150"
+          onClick={() => setMoveCategoryModal(null)}
+        >
+          <div
+            className="w-full max-w-sm rounded-2xl bg-card p-5 shadow-2xl border border-border space-y-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between">
+              <h3 className="font-semibold text-base">Move to Category</h3>
+              <button
+                onClick={() => setMoveCategoryModal(null)}
+                aria-label="Close"
+              >
+                <X className="size-5 text-muted-foreground" />
+              </button>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Select target category for{" "}
+              <strong className="text-foreground">{moveCategoryModal.t}</strong>
+              :
+            </p>
+            <div className="space-y-2 max-h-60 overflow-y-auto">
+              {Object.keys(safeCategories).map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => {
+                    const item = moveCategoryModal;
+                    setMoveCategoryModal(null);
+                    const updatedCategories = { ...safeCategories };
+                    if (item.source === "category" && item.categoryName) {
+                      const current =
+                        updatedCategories[item.categoryName] || [];
+                      updatedCategories[item.categoryName] = current.filter(
+                        (_, idx) => idx !== item.index,
+                      );
+                    }
+                    const targetCurrent = updatedCategories[cat] || [];
+                    updatedCategories[cat] = [
+                      ...targetCurrent,
+                      { t: item.t, u: item.u },
+                    ];
+                    setCategories(updatedCategories);
+                    toast.success(`Moved to ${cat}`);
+                  }}
+                  className="flex w-full items-center justify-between rounded-xl p-3 text-left hover:bg-muted text-sm font-medium transition-colors border"
+                >
+                  <span>{cat}</span>
+                  <span className="text-xs text-muted-foreground">
+                    ({(safeCategories[cat] || []).length} items)
+                  </span>
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={() => setMoveCategoryModal(null)}
+              className="w-full rounded-xl bg-muted py-2.5 text-xs font-semibold text-muted-foreground"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Category Modal */}
+      {editCategoryModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in duration-150"
+          onClick={() => setEditCategoryModal(null)}
+        >
+          <div
+            className="w-full max-w-sm rounded-2xl bg-card p-5 shadow-2xl border border-border space-y-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between">
+              <h3 className="font-semibold text-base">Edit Category Name</h3>
+              <button
+                onClick={() => setEditCategoryModal(null)}
+                aria-label="Close"
+              >
+                <X className="size-5 text-muted-foreground" />
+              </button>
+            </div>
+            <input
+              type="text"
+              value={editCategoryNewName}
+              onChange={(e) => setEditCategoryNewName(e.target.value)}
+              className="w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm outline-none focus:border-brand"
+              autoFocus
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && editCategoryNewName.trim()) {
+                  const oldName = editCategoryModal;
+                  const newName = editCategoryNewName.trim();
+                  if (newName && oldName !== newName) {
+                    const copy = { ...safeCategories };
+                    const items = copy[oldName] || [];
+                    delete copy[oldName];
+                    copy[newName] = items;
+                    setCategories(copy);
+                    if (activeCategory === oldName) {
+                      setActiveCategory(newName);
+                    }
+                    toast.success("Category renamed");
+                  }
+                  setEditCategoryModal(null);
+                }
+              }}
+            />
+            <div className="flex gap-2">
+              <button
+                onClick={() => setEditCategoryModal(null)}
+                className="flex-1 rounded-xl bg-muted py-2.5 text-xs font-semibold text-muted-foreground"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  const oldName = editCategoryModal;
+                  const newName = editCategoryNewName.trim();
+                  if (newName && oldName !== newName) {
+                    const copy = { ...safeCategories };
+                    const items = copy[oldName] || [];
+                    delete copy[oldName];
+                    copy[newName] = items;
+                    setCategories(copy);
+                    if (activeCategory === oldName) {
+                      setActiveCategory(newName);
+                    }
+                    toast.success("Category renamed");
+                  }
+                  setEditCategoryModal(null);
+                }}
+                disabled={!editCategoryNewName.trim()}
+                className="flex-1 rounded-xl bg-brand py-2.5 text-xs font-semibold text-brand-foreground disabled:opacity-50"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
+  );
+}
+
+function ShortcutItem({
+  title,
+  url,
+  onClick,
+  onLongPress,
+  onRemove,
+  showRemove,
+}: {
+  title: string;
+  url: string;
+  onClick: () => void;
+  onLongPress: () => void;
+  onRemove?: () => void;
+  showRemove?: boolean;
+}) {
+  const lp = useLongPress(onLongPress, onClick);
+  return (
+    <div className="relative group flex flex-col items-center">
+      <button {...lp} className="flex flex-col items-center gap-1 w-full">
+        <span className="flex size-14 items-center justify-center rounded-2xl bg-card shadow-sm border border-border/40 group-hover:border-brand/40 transition-colors">
+          <img
+            src={`https://www.google.com/s2/favicons?domain=${host(url)}&sz=64`}
+            alt=""
+            className="size-7"
+            onError={(e) => {
+              (e.target as HTMLElement).style.display = "none";
+            }}
+          />
+        </span>
+        <span className="w-full truncate text-xs text-center">{title}</span>
+      </button>
+      {showRemove && onRemove && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onRemove();
+          }}
+          title="Remove shortcut"
+          className="absolute -top-1 -right-1 hidden group-hover:flex size-5 items-center justify-center rounded-full bg-muted text-muted-foreground hover:bg-destructive hover:text-destructive-foreground text-[10px]"
+        >
+          ✕
+        </button>
+      )}
+    </div>
+  );
+}
+
+function CategoryItem({
+  category,
+  isActive,
+  onClick,
+  onLongPress,
+}: {
+  category: string;
+  isActive: boolean;
+  onClick: () => void;
+  onLongPress: () => void;
+}) {
+  const lp = useLongPress(onLongPress, onClick);
+  return (
+    <button
+      {...lp}
+      className={`shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition-all ${
+        isActive
+          ? "bg-brand text-brand-foreground font-semibold shadow-xs"
+          : "text-muted-foreground hover:text-foreground bg-transparent"
+      }`}
+    >
+      {category}
+    </button>
   );
 }
 

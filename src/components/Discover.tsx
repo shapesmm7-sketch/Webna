@@ -1,5 +1,11 @@
 import { useEffect, useRef, useState, useCallback } from "react";
-import { getNews, getFootballNews, type NewsItem } from "@/lib/news.functions";
+import {
+  getNews,
+  getFootballNews,
+  type NewsItem,
+  FALLBACK_FOOTBALL_ITEMS,
+  FALLBACK_GENERAL_NEWS,
+} from "@/lib/news.functions";
 import { getTikTokFeed, type TikTokVideo } from "@/lib/tiktok.functions";
 import {
   fallbackImage,
@@ -39,16 +45,23 @@ export interface DiscoverProps {
 
 function feedUrl(topic: string) {
   const TOPIC_FEEDS: Record<string, string> = {
-    "": "https://feeds.bbci.co.uk/news/rss.xml",
-    WORLD: "https://feeds.bbci.co.uk/news/world/rss.xml",
-    TECHNOLOGY: "https://feeds.bbci.co.uk/news/technology/rss.xml",
-    SPORTS: "https://feeds.bbci.co.uk/sport/rss.xml",
-    BUSINESS: "https://feeds.bbci.co.uk/news/business/rss.xml",
-    SCIENCE: "https://feeds.bbci.co.uk/news/science_and_environment/rss.xml",
+    "": "https://news.google.com/rss?ceid=US:en&gl=US&hl=en",
+    WORLD:
+      "https://news.google.com/rss/headlines/section/topic/WORLD?ceid=US:en&gl=US&hl=en",
+    TECHNOLOGY:
+      "https://news.google.com/rss/headlines/section/topic/TECHNOLOGY?ceid=US:en&gl=US&hl=en",
+    SPORTS:
+      "https://news.google.com/rss/headlines/section/topic/SPORTS?ceid=US:en&gl=US&hl=en",
+    BUSINESS:
+      "https://news.google.com/rss/headlines/section/topic/BUSINESS?ceid=US:en&gl=US&hl=en",
+    SCIENCE:
+      "https://news.google.com/rss/headlines/section/topic/SCIENCE?ceid=US:en&gl=US&hl=en",
     ENTERTAINMENT:
-      "https://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml",
+      "https://news.google.com/rss/headlines/section/topic/ENTERTAINMENT?ceid=US:en&gl=US&hl=en",
   };
-  return TOPIC_FEEDS[topic] || "https://feeds.bbci.co.uk/news/rss.xml";
+  return (
+    TOPIC_FEEDS[topic] || "https://news.google.com/rss?ceid=US:en&gl=US&hl=en"
+  );
 }
 
 function ago(d: string) {
@@ -69,17 +82,18 @@ export function Discover({ onOpen, onOpenWeb, onPlayVideo }: DiscoverProps) {
   const [items, setItems] = useState<NewsItem[] | null>(() => {
     if (typeof window === "undefined") return null;
     try {
-      const cached = localStorage.getItem("webna-feed-v4-");
+      const cached = localStorage.getItem("webna-feed-v6-");
       if (cached) {
         const parsed = JSON.parse(cached) as NewsItem[];
-        return parsed.length > 0 ? parsed : null;
+        // Accept cached feed only if it contains a full news list
+        if (parsed.length >= 10) return parsed;
       }
     } catch {
       // ignore
     }
     return null;
   });
-  const [shown, setShown] = useState(8);
+  const [shown, setShown] = useState(30);
 
   // Football News state
   const [footballItems, setFootballItems] = useState<NewsItem[] | null>(() => {
@@ -97,7 +111,7 @@ export function Discover({ onOpen, onOpenWeb, onPlayVideo }: DiscoverProps) {
   });
   const [footballLoading, setFootballLoading] = useState(false);
   const [footballError, setFootballError] = useState(false);
-  const [footballShown, setFootballShown] = useState(8);
+  const [footballShown, setFootballShown] = useState(30);
 
   // TikTok state
   const [tiktokVideos, setTikTokVideos] = useState<TikTokVideo[] | null>(() => {
@@ -119,11 +133,11 @@ export function Discover({ onOpen, onOpenWeb, onPlayVideo }: DiscoverProps) {
   const [pull, setPull] = useState(0);
   const startY = useRef<number | null>(null);
   const sentinel = useRef<HTMLDivElement>(null);
-  const key = "webna-feed-v4-" + topic;
+  const key = "webna-feed-v6-" + topic;
 
   const loadNews = useCallback(
     async (force = false, currentTopic = topic) => {
-      const currentKey = "webna-feed-v4-" + currentTopic;
+      const currentKey = "webna-feed-v6-" + currentTopic;
       const cached = localStorage.getItem(currentKey);
       if (cached && !force) {
         try {
@@ -135,8 +149,9 @@ export function Discover({ onOpen, onOpenWeb, onPlayVideo }: DiscoverProps) {
             seen.add(u);
             return true;
           });
-          if (unique.length > 0) {
+          if (unique.length >= 10) {
             setItems(unique);
+            setShown(Math.max(30, unique.length));
           }
         } catch {
           // ignore
@@ -145,7 +160,7 @@ export function Discover({ onOpen, onOpenWeb, onPlayVideo }: DiscoverProps) {
 
       try {
         const list = await getNews({ data: { rss: feedUrl(currentTopic) } });
-        if (!list.length) throw new Error("empty");
+        if (!list || !list.length) throw new Error("empty");
         const seen = new Set<string>();
         const unique = list.filter((it) => {
           const u = it.link || it.title;
@@ -154,17 +169,22 @@ export function Discover({ onOpen, onOpenWeb, onPlayVideo }: DiscoverProps) {
           return true;
         });
         setItems(unique);
-        setShown(8);
+        setShown(Math.max(30, unique.length));
         try {
-          localStorage.setItem(currentKey, JSON.stringify(unique));
+          if (unique.length >= 10) {
+            localStorage.setItem(currentKey, JSON.stringify(unique));
+          }
         } catch {
           // ignore
         }
       } catch {
-        if (!cached) setItems([]);
+        if (!cached || (items && items.length < 10)) {
+          setItems(FALLBACK_GENERAL_NEWS);
+          setShown(FALLBACK_GENERAL_NEWS.length);
+        }
       }
     },
-    [topic],
+    [topic, items],
   );
 
   const fetchTikTokFeedData = useCallback(async (force = false) => {
@@ -236,21 +256,22 @@ export function Discover({ onOpen, onOpenWeb, onPlayVideo }: DiscoverProps) {
     setFootballError(false);
 
     try {
-      const list = await getFootballNews();
+      const list = await getFootballNews({ data: {} });
       if (!list || list.length === 0) {
         throw new Error("No football news items returned");
       }
       setFootballItems(list);
-      setFootballShown(8);
+      setFootballShown(Math.max(30, list.length));
       try {
         localStorage.setItem("webna-football-news-cache", JSON.stringify(list));
       } catch {
         // ignore
       }
     } catch (err) {
-      console.error("Error loading football news:", err);
+      console.warn("Could not load remote football news:", err);
       if (!hasData) {
-        setFootballError(true);
+        setFootballItems(FALLBACK_FOOTBALL_ITEMS);
+        setFootballShown(FALLBACK_FOOTBALL_ITEMS.length);
       }
     } finally {
       setFootballLoading(false);
@@ -278,9 +299,9 @@ export function Discover({ onOpen, onOpenWeb, onPlayVideo }: DiscoverProps) {
     const io = new IntersectionObserver((e) => {
       if (e[0]?.isIntersecting) {
         if (viewMode === "football") {
-          setFootballShown((s) => s + 6);
+          setFootballShown((s) => s + 10);
         } else if (viewMode === "news") {
-          setShown((s) => s + 6);
+          setShown((s) => s + 10);
         }
       }
     });
@@ -771,7 +792,7 @@ export function Discover({ onOpen, onOpenWeb, onPlayVideo }: DiscoverProps) {
                         try {
                           return new URL(it.link).hostname;
                         } catch {
-                          return "bbc.co.uk";
+                          return "news.google.com";
                         }
                       })()}&sz=32`}
                       alt=""

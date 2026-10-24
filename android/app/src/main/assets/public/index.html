@@ -2,21 +2,22 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>WebNa Browser</title>
-    <meta
-      name="description"
-      content="WebNa: fast browser with Google search, worldwide news, saved links and a video downloader."
-    />
+    <meta name="description" content="WebNa: fast browser with Google search, worldwide news, saved links and a video downloader." />
     <meta name="theme-color" content="#c25e00" />
-    <link rel="stylesheet" href="/assets/styles-Bjl0G24Y.css" />
+    <script>
+      // Normalize Capacitor Android initial URL if loaded from /index.html or file:///
+      if (window.location.pathname.endsWith("index.html") || window.location.pathname.includes("android_asset")) {
+        try {
+          window.history.replaceState(null, "", "/");
+        } catch (e) {}
+      }
+    </script>
+    <link rel="stylesheet" href="./assets/styles-QRBSzRTG.css">
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/assets/routes-DGsBnP8H.js"></script>
-    <script type="module" src="/assets/index-CpBxuaI_.js"></script>
+    <script type="module" src="./assets/routes-ChbrbIlp.js"></script><script type="module" src="./assets/index-DYK8nNH1.js"></script>
   </body>
 </html>

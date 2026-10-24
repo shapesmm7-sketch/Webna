@@ -148,6 +148,7 @@ export interface AudioPlayerProps {
   initialIndex?: number;
   onClose: () => void;
   onSwitchToVideo?: () => void;
+  onOpenUrl?: (url: string) => void;
 }
 
 export function AudioPlayer({
@@ -156,6 +157,7 @@ export function AudioPlayer({
   initialIndex = 0,
   onClose,
   onSwitchToVideo,
+  onOpenUrl,
 }: AudioPlayerProps) {
   // Playlist resolution
   const playlist = useMemo(() => {
@@ -876,6 +878,35 @@ export function AudioPlayer({
             <div className="absolute inset-0 rounded-full border-2 border-dashed border-[#6d5b97]/30 animate-spin duration-[16000ms]" />
           )}
         </div>
+
+        {isTrendingTrack(currentTrack) && currentTrack.externalUrl && (
+          <button
+            onClick={() => {
+              if (onOpenUrl) {
+                onClose();
+                onOpenUrl(currentTrack.externalUrl!);
+              } else {
+                window.open(currentTrack.externalUrl, "_blank");
+              }
+            }}
+            className={`mt-3 flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-semibold shadow-sm transition-all active:scale-95 ${
+              currentTrack.platform === "spotify"
+                ? "bg-[#1DB954] text-white hover:bg-[#1aa34a]"
+                : currentTrack.platform === "apple"
+                  ? "bg-[#FC3C44] text-white hover:bg-[#e03038]"
+                  : "bg-brand text-brand-foreground hover:opacity-90"
+            }`}
+          >
+            <Play className="size-3.5 fill-current" />
+            <span>
+              {currentTrack.platform === "spotify"
+                ? "Play Full Song in Spotify Player (In-App)"
+                : currentTrack.platform === "apple"
+                  ? "Play Full Song in Apple Music (In-App)"
+                  : `Play in ${currentTrack.platformName || "Web"} Player`}
+            </span>
+          </button>
+        )}
 
         {errorMessage && (
           <div className="flex items-center gap-2 p-2 rounded-xl bg-destructive/10 text-destructive text-xs text-center w-full max-w-sm mt-2">

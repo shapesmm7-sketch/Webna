@@ -1831,7 +1831,7 @@ export function AudioPlayerPanel({
                                   {track.artist}
                                 </p>
                               </div>
-                              <div className="flex items-center gap-0.5">
+                              <div className="flex items-center gap-1.5 shrink-0">
                                 {track.externalUrl && (
                                   <button
                                     type="button"
@@ -1846,10 +1846,23 @@ export function AudioPlayerPanel({
                                         );
                                       }
                                     }}
-                                    title={`Open on ${track.platformName || "Platform"}`}
-                                    className="p-1.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-[#eae4dc] transition-colors"
+                                    title={`Play full track on ${track.platformName || "Web"} Player inside app`}
+                                    className={`flex items-center gap-1 px-2.5 py-1 rounded-xl text-[11px] font-semibold transition-all shadow-xs ${
+                                      track.platform === "spotify"
+                                        ? "bg-[#1DB954] text-white hover:bg-[#1aa34a] active:scale-95"
+                                        : track.platform === "apple"
+                                          ? "bg-[#FC3C44] text-white hover:bg-[#e03038] active:scale-95"
+                                          : "bg-[#6d5b97] text-white hover:opacity-90 active:scale-95"
+                                    }`}
                                   >
-                                    <ExternalLink className="size-3.5" />
+                                    <Play className="size-2.5 fill-current" />
+                                    <span>
+                                      {track.platform === "spotify"
+                                        ? "Spotify"
+                                        : track.platform === "apple"
+                                          ? "Apple"
+                                          : "Play"}
+                                    </span>
                                   </button>
                                 )}
                                 <button
@@ -2244,6 +2257,7 @@ export function AudioPlayerPanel({
               setPlayingAudioIndex(null);
               setPlayerMode("video");
             }}
+            onOpenUrl={onOpenUrl}
           />
         )}
 

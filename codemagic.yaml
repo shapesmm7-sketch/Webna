@@ -12,10 +12,12 @@ workflows:
           npm install --legacy-peer-deps
       - name: Build web application and prepare Android assets
         script: |
-          npm run android:prepare
+          npm run build
+          node scripts/prepare-android.mjs
       - name: Sync Android project
         script: |
           npx cap sync android
+          node scripts/prepare-android.mjs
       - name: Build Android APK
         script: |
           cd android

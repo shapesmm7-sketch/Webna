@@ -161,39 +161,80 @@ export const searchMusicTracks = createServerFn({ method: "GET" })
             term,
           )}&limit=30`,
         );
-        if (!res.ok) throw new Error("Spotify search query failed");
-        const json = await res.json();
-        const results = json.data || [];
-        return results.map(
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (item: any, idx: number): TrendingTrack => {
-            const title = item.title || "Track";
-            const artist = item.artist?.name || "Artist";
-            return {
-              id: `spotify-${item.id || idx}`,
-              title,
-              artist,
-              coverUrl:
-                item.album?.cover_big ||
-                item.album?.cover_medium ||
-                item.album?.cover ||
-                "",
-              rank: idx + 1,
-              previewUrl: item.preview || "",
-              platform: "spotify",
-              platformName: "Spotify",
-              platformColor: "#1DB954",
-              externalUrl: `https://open.spotify.com/search/${encodeURIComponent(
-                title + " " + artist,
-              )}`,
-              duration: item.duration,
-            };
-          },
-        );
+        if (res.ok) {
+          const json = await res.json();
+          const results = json.data || [];
+          if (results.length > 0) {
+            return results.map(
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              (item: any, idx: number): TrendingTrack => {
+                const title = item.title || "Track";
+                const artist = item.artist?.name || "Artist";
+                return {
+                  id: `spotify-${item.id || idx}`,
+                  title,
+                  artist,
+                  coverUrl:
+                    item.album?.cover_big ||
+                    item.album?.cover_medium ||
+                    item.album?.cover ||
+                    "",
+                  rank: idx + 1,
+                  previewUrl: item.preview || "",
+                  platform: "spotify",
+                  platformName: "Spotify",
+                  platformColor: "#1DB954",
+                  externalUrl: `https://open.spotify.com/search/${encodeURIComponent(
+                    title + " " + artist,
+                  )}`,
+                  duration: item.duration,
+                };
+              },
+            );
+          }
+        }
       } catch (err) {
-        console.error("Spotify search error:", err);
-        return [];
+        console.warn("Deezer search failed, falling back for Spotify:", err);
       }
+
+      // Fallback to search index formatted with Spotify Web Player links & badges
+      try {
+        const res = await fetch(
+          `https://itunes.apple.com/search?term=${encodeURIComponent(
+            term,
+          )}&entity=song&limit=30`,
+        );
+        if (res.ok) {
+          const json = await res.json();
+          const results = json.results || [];
+          return results.map(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (item: any, idx: number): TrendingTrack => {
+              const title = item.trackName || "Track";
+              const artist = item.artistName || "Artist";
+              return {
+                id: `spotify-it-${item.trackId || idx}`,
+                title,
+                artist,
+                coverUrl: item.artworkUrl100
+                  ? item.artworkUrl100.replace("100x100bb", "600x600bb")
+                  : "",
+                rank: idx + 1,
+                previewUrl: item.previewUrl || "",
+                platform: "spotify",
+                platformName: "Spotify",
+                platformColor: "#1DB954",
+                externalUrl: `https://open.spotify.com/search/${encodeURIComponent(
+                  title + " " + artist,
+                )}`,
+              };
+            },
+          );
+        }
+      } catch (err) {
+        console.error("Spotify fallback error:", err);
+      }
+      return [];
     }
 
     // 3. YOUTUBE MUSIC SEARCH
