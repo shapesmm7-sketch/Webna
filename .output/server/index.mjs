@@ -16,290 +16,297 @@ globalThis.__nitro_vite_envs__ = services;
 //#endregion
 //#region #nitro/virtual/public-assets-data
 var public_assets_data_default = {
-	"/assets/styles-B0xfFNQD.css": {
-		"type": "text/css; charset=utf-8",
-		"etag": "\"1d5c4-doPVCV2SONW2Dm06riCHuM9quz0\"",
-		"mtime": "2026-11-05T06:23:13.321Z",
-		"size": 120260,
-		"path": "../public/assets/styles-B0xfFNQD.css"
-	},
-	"/favicon.ico": {
-		"type": "image/vnd.microsoft.icon",
-		"etag": "\"4f95-3RXc3p2mhEAs1WBwaIvE0Y0uu0Y\"",
-		"mtime": "2026-11-05T06:23:14.280Z",
-		"size": 20373,
-		"path": "../public/favicon.ico"
-	},
 	"/robots.txt": {
 		"type": "text/plain; charset=utf-8",
 		"etag": "\"a0-CKGXSIe7TSsqDTmGm/nY1t/o5d0\"",
-		"mtime": "2026-11-05T06:23:14.280Z",
+		"mtime": "2026-11-05T06:43:02.744Z",
 		"size": 160,
 		"path": "../public/robots.txt"
-	},
-	"/assets/aistudio/Screenshot_20261020-181223_Chrome_68251b26.jpg": {
-		"type": "image/jpeg",
-		"etag": "\"3a7cb-KE0JeEjm2iTOwkxYqiWNSwXw1d0\"",
-		"mtime": "2026-11-05T06:23:14.280Z",
-		"size": 239563,
-		"path": "../public/assets/aistudio/Screenshot_20261020-181223_Chrome_68251b26.jpg"
 	},
 	"/assets/aistudio/Screenshot_20261020-180522_Chrome_e8c7bc53.jpg": {
 		"type": "image/jpeg",
 		"etag": "\"28dbe-tt14X789hWRGnwhNWOKFraDD2hM\"",
-		"mtime": "2026-11-05T06:23:14.276Z",
+		"mtime": "2026-11-05T06:43:02.739Z",
 		"size": 167358,
 		"path": "../public/assets/aistudio/Screenshot_20261020-180522_Chrome_e8c7bc53.jpg"
 	},
-	"/assets/routes-Carwpczc.js": {
-		"type": "text/javascript; charset=utf-8",
-		"etag": "\"71708-bbcX3Zrlo1wiEkFOciOqxkvjmxA\"",
-		"mtime": "2026-11-05T06:23:13.321Z",
-		"size": 464648,
-		"path": "../public/assets/routes-Carwpczc.js"
-	},
-	"/assets/aistudio/Screenshot_20261021-104011_Chrome_56d3714a.jpg": {
-		"type": "image/jpeg",
-		"etag": "\"440bf-4fKLH9I3cQ6wEmVHETge/odo9V4\"",
-		"mtime": "2026-11-05T06:23:14.277Z",
-		"size": 278719,
-		"path": "../public/assets/aistudio/Screenshot_20261021-104011_Chrome_56d3714a.jpg"
-	},
-	"/assets/aistudio/Screenshot_20261022-172821_Chrome_fa965f02.jpg": {
-		"type": "image/jpeg",
-		"etag": "\"36853-CdD4NurHQlYAbBc5jKeNBkMG45Q\"",
-		"mtime": "2026-11-05T06:23:14.277Z",
-		"size": 223315,
-		"path": "../public/assets/aistudio/Screenshot_20261022-172821_Chrome_fa965f02.jpg"
-	},
-	"/assets/aistudio/Screenshot_20261021-002604_Chrome_4eef11fe.jpg": {
-		"type": "image/jpeg",
-		"etag": "\"48e85-GIwwv5250KgJHBzaT4T8dzUgDTI\"",
-		"mtime": "2026-11-05T06:23:14.277Z",
-		"size": 298629,
-		"path": "../public/assets/aistudio/Screenshot_20261021-002604_Chrome_4eef11fe.jpg"
+	"/assets/styles-B0xfFNQD.css": {
+		"type": "text/css; charset=utf-8",
+		"etag": "\"1d5c4-doPVCV2SONW2Dm06riCHuM9quz0\"",
+		"mtime": "2026-11-05T06:43:01.765Z",
+		"size": 120260,
+		"path": "../public/assets/styles-B0xfFNQD.css"
 	},
 	"/assets/aistudio/Screenshot_20261020-182922_Chrome_60a493bd.jpg": {
 		"type": "image/jpeg",
 		"etag": "\"48edd-tdNLeMT6uRmCLiyhaNYhbyfErAw\"",
-		"mtime": "2026-11-05T06:23:14.276Z",
+		"mtime": "2026-11-05T06:43:02.740Z",
 		"size": 298717,
 		"path": "../public/assets/aistudio/Screenshot_20261020-182922_Chrome_60a493bd.jpg"
 	},
-	"/assets/aistudio/Screenshot_20261021-003326_Chrome_1cc66c5f.jpg": {
-		"type": "image/jpeg",
-		"etag": "\"2c59a-aMEg9vQ3k6fkd2yozuYF+W66kRQ\"",
-		"mtime": "2026-11-05T06:23:14.277Z",
-		"size": 181658,
-		"path": "../public/assets/aistudio/Screenshot_20261021-003326_Chrome_1cc66c5f.jpg"
+	"/assets/routes-Carwpczc.js": {
+		"type": "text/javascript; charset=utf-8",
+		"etag": "\"71708-bbcX3Zrlo1wiEkFOciOqxkvjmxA\"",
+		"mtime": "2026-11-05T06:43:01.765Z",
+		"size": 464648,
+		"path": "../public/assets/routes-Carwpczc.js"
 	},
-	"/assets/aistudio/Screenshot_20261022-190105_Chrome_572fc3df.jpg": {
+	"/assets/aistudio/Screenshot_20261020-181223_Chrome_68251b26.jpg": {
 		"type": "image/jpeg",
-		"etag": "\"44054-uPLHqLW+Qi2Hev2mXySYmpNsPLQ\"",
-		"mtime": "2026-11-05T06:23:14.280Z",
-		"size": 278612,
-		"path": "../public/assets/aistudio/Screenshot_20261022-190105_Chrome_572fc3df.jpg"
+		"etag": "\"3a7cb-KE0JeEjm2iTOwkxYqiWNSwXw1d0\"",
+		"mtime": "2026-11-05T06:43:02.740Z",
+		"size": 239563,
+		"path": "../public/assets/aistudio/Screenshot_20261020-181223_Chrome_68251b26.jpg"
 	},
-	"/assets/aistudio/Screenshot_20261022-180442_d4a1d11b.jpg": {
-		"type": "image/jpeg",
-		"etag": "\"53165-xZL2FHCqm4BZVcx2nXI0lPX6oyw\"",
-		"mtime": "2026-11-05T06:23:14.278Z",
-		"size": 340325,
-		"path": "../public/assets/aistudio/Screenshot_20261022-180442_d4a1d11b.jpg"
+	"/favicon.ico": {
+		"type": "image/vnd.microsoft.icon",
+		"etag": "\"4f95-3RXc3p2mhEAs1WBwaIvE0Y0uu0Y\"",
+		"mtime": "2026-11-05T06:43:02.744Z",
+		"size": 20373,
+		"path": "../public/favicon.ico"
 	},
-	"/assets/aistudio/Screenshot_20261021-085542_Chrome_e3d90fec.jpg": {
+	"/assets/aistudio/Screenshot_20261021-104011_Chrome_56d3714a.jpg": {
 		"type": "image/jpeg",
-		"etag": "\"442f2-J4W+ZlDG0Tf52J9einktST49i88\"",
-		"mtime": "2026-11-05T06:23:14.277Z",
-		"size": 279282,
-		"path": "../public/assets/aistudio/Screenshot_20261021-085542_Chrome_e3d90fec.jpg"
+		"etag": "\"440bf-4fKLH9I3cQ6wEmVHETge/odo9V4\"",
+		"mtime": "2026-11-05T06:43:02.741Z",
+		"size": 278719,
+		"path": "../public/assets/aistudio/Screenshot_20261021-104011_Chrome_56d3714a.jpg"
+	},
+	"/assets/aistudio/Screenshot_20261021-002604_Chrome_4eef11fe.jpg": {
+		"type": "image/jpeg",
+		"etag": "\"48e85-GIwwv5250KgJHBzaT4T8dzUgDTI\"",
+		"mtime": "2026-11-05T06:43:02.740Z",
+		"size": 298629,
+		"path": "../public/assets/aistudio/Screenshot_20261021-002604_Chrome_4eef11fe.jpg"
 	},
 	"/assets/aistudio/Screenshot_20261022-191152_Chrome_2193105d.jpg": {
 		"type": "image/jpeg",
 		"etag": "\"4d09a-JpBgkM5qAd9l1FGplDIUjTJieYk\"",
-		"mtime": "2026-11-05T06:23:14.278Z",
+		"mtime": "2026-11-05T06:43:02.741Z",
 		"size": 315546,
 		"path": "../public/assets/aistudio/Screenshot_20261022-191152_Chrome_2193105d.jpg"
 	},
-	"/assets/aistudio/Screenshot_20261023-112822_Chrome_45bc82f5.jpg": {
+	"/assets/aistudio/Screenshot_20261022-190105_Chrome_572fc3df.jpg": {
 		"type": "image/jpeg",
-		"etag": "\"4f388-o1Zlv7aRcVAhZSuRumkMjmgylnk\"",
-		"mtime": "2026-11-05T06:23:14.278Z",
-		"size": 324488,
-		"path": "../public/assets/aistudio/Screenshot_20261023-112822_Chrome_45bc82f5.jpg"
-	},
-	"/assets/aistudio/Screenshot_20261022-212215_Chrome_238ea3ab.jpg": {
-		"type": "image/jpeg",
-		"etag": "\"52b6a-O7GAGG/AkA8o3r+oXC5Y2MYVhgE\"",
-		"mtime": "2026-11-05T06:23:14.278Z",
-		"size": 338794,
-		"path": "../public/assets/aistudio/Screenshot_20261022-212215_Chrome_238ea3ab.jpg"
+		"etag": "\"44054-uPLHqLW+Qi2Hev2mXySYmpNsPLQ\"",
+		"mtime": "2026-11-05T06:43:02.744Z",
+		"size": 278612,
+		"path": "../public/assets/aistudio/Screenshot_20261022-190105_Chrome_572fc3df.jpg"
 	},
 	"/assets/aistudio/Screenshot_20261022-211635_Chrome_b7fad753.jpg": {
 		"type": "image/jpeg",
 		"etag": "\"55133-jKN7ZYys0SiLXUWO17kUedBirlw\"",
-		"mtime": "2026-11-05T06:23:14.278Z",
+		"mtime": "2026-11-05T06:43:02.741Z",
 		"size": 348467,
 		"path": "../public/assets/aistudio/Screenshot_20261022-211635_Chrome_b7fad753.jpg"
+	},
+	"/assets/aistudio/Screenshot_20261022-212215_Chrome_238ea3ab.jpg": {
+		"type": "image/jpeg",
+		"etag": "\"52b6a-O7GAGG/AkA8o3r+oXC5Y2MYVhgE\"",
+		"mtime": "2026-11-05T06:43:02.742Z",
+		"size": 338794,
+		"path": "../public/assets/aistudio/Screenshot_20261022-212215_Chrome_238ea3ab.jpg"
 	},
 	"/assets/aistudio/Screenshot_20261022-212605_Chrome_283a4fa2.jpg": {
 		"type": "image/jpeg",
 		"etag": "\"3fd25-2zkr5sWT2+WL865iSegR3JQyM80\"",
-		"mtime": "2026-11-05T06:23:14.278Z",
+		"mtime": "2026-11-05T06:43:02.742Z",
 		"size": 261413,
 		"path": "../public/assets/aistudio/Screenshot_20261022-212605_Chrome_283a4fa2.jpg"
 	},
-	"/assets/aistudio/Screenshot_20261022-180419_0d8313d2.jpg": {
+	"/assets/aistudio/Screenshot_20261023-112822_Chrome_45bc82f5.jpg": {
 		"type": "image/jpeg",
-		"etag": "\"5dd5d-9fIgB3QjhJTghaHdXOqlvXn6A8o\"",
-		"mtime": "2026-11-05T06:23:14.279Z",
-		"size": 384349,
-		"path": "../public/assets/aistudio/Screenshot_20261022-180419_0d8313d2.jpg"
+		"etag": "\"4f388-o1Zlv7aRcVAhZSuRumkMjmgylnk\"",
+		"mtime": "2026-11-05T06:43:02.742Z",
+		"size": 324488,
+		"path": "../public/assets/aistudio/Screenshot_20261023-112822_Chrome_45bc82f5.jpg"
 	},
 	"/assets/aistudio/Screenshot_20261023-122556_Chrome_3edb392f.jpg": {
 		"type": "image/jpeg",
 		"etag": "\"30d68-9ikkPFQbuj5dScspXKEstPyBOvE\"",
-		"mtime": "2026-11-05T06:23:14.278Z",
+		"mtime": "2026-11-05T06:43:02.742Z",
 		"size": 200040,
 		"path": "../public/assets/aistudio/Screenshot_20261023-122556_Chrome_3edb392f.jpg"
+	},
+	"/assets/aistudio/Screenshot_20261021-003326_Chrome_1cc66c5f.jpg": {
+		"type": "image/jpeg",
+		"etag": "\"2c59a-aMEg9vQ3k6fkd2yozuYF+W66kRQ\"",
+		"mtime": "2026-11-05T06:43:02.741Z",
+		"size": 181658,
+		"path": "../public/assets/aistudio/Screenshot_20261021-003326_Chrome_1cc66c5f.jpg"
+	},
+	"/assets/aistudio/Screenshot_20261021-085542_Chrome_e3d90fec.jpg": {
+		"type": "image/jpeg",
+		"etag": "\"442f2-J4W+ZlDG0Tf52J9einktST49i88\"",
+		"mtime": "2026-11-05T06:43:02.741Z",
+		"size": 279282,
+		"path": "../public/assets/aistudio/Screenshot_20261021-085542_Chrome_e3d90fec.jpg"
+	},
+	"/assets/aistudio/Screenshot_20261022-172821_Chrome_fa965f02.jpg": {
+		"type": "image/jpeg",
+		"etag": "\"36853-CdD4NurHQlYAbBc5jKeNBkMG45Q\"",
+		"mtime": "2026-11-05T06:43:02.741Z",
+		"size": 223315,
+		"path": "../public/assets/aistudio/Screenshot_20261022-172821_Chrome_fa965f02.jpg"
+	},
+	"/assets/aistudio/Screenshot_20261022-180442_d4a1d11b.jpg": {
+		"type": "image/jpeg",
+		"etag": "\"53165-xZL2FHCqm4BZVcx2nXI0lPX6oyw\"",
+		"mtime": "2026-11-05T06:43:02.741Z",
+		"size": 340325,
+		"path": "../public/assets/aistudio/Screenshot_20261022-180442_d4a1d11b.jpg"
+	},
+	"/assets/aistudio/Screenshot_20261022-180419_0d8313d2.jpg": {
+		"type": "image/jpeg",
+		"etag": "\"5dd5d-9fIgB3QjhJTghaHdXOqlvXn6A8o\"",
+		"mtime": "2026-11-05T06:43:02.743Z",
+		"size": 384349,
+		"path": "../public/assets/aistudio/Screenshot_20261022-180419_0d8313d2.jpg"
 	},
 	"/assets/index-BJzDSR5r.js": {
 		"type": "text/javascript; charset=utf-8",
 		"etag": "\"9c792-yfU9sO+l4ee61R2nW/vWv6KxI5U\"",
-		"mtime": "2026-11-05T06:23:13.321Z",
+		"mtime": "2026-11-05T06:43:01.765Z",
 		"size": 640914,
 		"path": "../public/assets/index-BJzDSR5r.js"
 	},
 	"/assets/aistudio/Screenshot_20261023-115602_Chrome_0096ea37.jpg": {
 		"type": "image/jpeg",
 		"etag": "\"9844d-Csy8Xgm7iFBpwLHiOwXbQVYBAts\"",
-		"mtime": "2026-11-05T06:23:14.279Z",
+		"mtime": "2026-11-05T06:43:02.742Z",
 		"size": 623693,
 		"path": "../public/assets/aistudio/Screenshot_20261023-115602_Chrome_0096ea37.jpg"
 	},
 	"/videos/flower.mp4": {
 		"type": "video/mp4",
 		"etag": "\"1137b7-+08VoVyi5fkN62AMjxKHCOQ84iI\"",
-		"mtime": "2026-11-05T06:23:14.277Z",
+		"mtime": "2026-11-05T06:43:02.741Z",
 		"size": 1128375,
 		"path": "../public/videos/flower.mp4"
 	},
 	"/assets/aistudio/Screenshot_20261023-131343_WebNa_1683f15b.jpg": {
 		"type": "image/jpeg",
 		"etag": "\"8646-Oyh9ckdhye3vl6PSdZz1nJcSSPc\"",
-		"mtime": "2026-11-05T06:23:14.279Z",
+		"mtime": "2026-11-05T06:43:02.742Z",
 		"size": 34374,
 		"path": "../public/assets/aistudio/Screenshot_20261023-131343_WebNa_1683f15b.jpg"
-	},
-	"/assets/aistudio/Screenshot_20261023-132353_WebNa_5f20aadd.jpg": {
-		"type": "image/jpeg",
-		"etag": "\"89e2-8B8S9FAl+M47KbWaI8ISRxhTHDY\"",
-		"mtime": "2026-11-05T06:23:14.278Z",
-		"size": 35298,
-		"path": "../public/assets/aistudio/Screenshot_20261023-132353_WebNa_5f20aadd.jpg"
 	},
 	"/assets/aistudio/Screenshot_20261023-125228_Chrome_6cd98852.jpg": {
 		"type": "image/jpeg",
 		"etag": "\"3730c-IL5QimpW9cZ+9Dkt4Mdtr9tU14M\"",
-		"mtime": "2026-11-05T06:23:14.278Z",
+		"mtime": "2026-11-05T06:43:02.743Z",
 		"size": 226060,
 		"path": "../public/assets/aistudio/Screenshot_20261023-125228_Chrome_6cd98852.jpg"
+	},
+	"/assets/aistudio/Screenshot_20261023-132353_WebNa_5f20aadd.jpg": {
+		"type": "image/jpeg",
+		"etag": "\"89e2-8B8S9FAl+M47KbWaI8ISRxhTHDY\"",
+		"mtime": "2026-11-05T06:43:02.742Z",
+		"size": 35298,
+		"path": "../public/assets/aistudio/Screenshot_20261023-132353_WebNa_5f20aadd.jpg"
 	},
 	"/assets/aistudio/Screenshot_20261023-181447_Chrome_015c848d.jpg": {
 		"type": "image/jpeg",
 		"etag": "\"68f4-P5TdjE78E/eUSvHRKQZqNpCRyCw\"",
-		"mtime": "2026-11-05T06:23:14.280Z",
+		"mtime": "2026-11-05T06:43:02.743Z",
 		"size": 26868,
 		"path": "../public/assets/aistudio/Screenshot_20261023-181447_Chrome_015c848d.jpg"
 	},
 	"/assets/aistudio/Screenshot_20261102-112158_WebNa_9c8a47ce.jpg": {
 		"type": "image/jpeg",
 		"etag": "\"8c54-j+tQvuGutyq2nS+EH7RYmewugLo\"",
-		"mtime": "2026-11-05T06:23:14.279Z",
+		"mtime": "2026-11-05T06:43:02.743Z",
 		"size": 35924,
 		"path": "../public/assets/aistudio/Screenshot_20261102-112158_WebNa_9c8a47ce.jpg"
 	},
 	"/assets/aistudio/Screenshot_20261103-174943_WebNa_b49f33c6.jpg": {
 		"type": "image/jpeg",
 		"etag": "\"90c1-u8ko+LZKT4/1/9Tov2wEgsTxErk\"",
-		"mtime": "2026-11-05T06:23:14.279Z",
+		"mtime": "2026-11-05T06:43:02.743Z",
 		"size": 37057,
 		"path": "../public/assets/aistudio/Screenshot_20261103-174943_WebNa_b49f33c6.jpg"
 	},
 	"/assets/aistudio/Screenshot_20261104-132852_WebNa_dfd4c210.jpg": {
 		"type": "image/jpeg",
 		"etag": "\"ff65-0cXEFuvaRQ3N4/VGFl1m8VMtufs\"",
-		"mtime": "2026-11-05T06:23:14.279Z",
+		"mtime": "2026-11-05T06:43:02.743Z",
 		"size": 65381,
 		"path": "../public/assets/aistudio/Screenshot_20261104-132852_WebNa_dfd4c210.jpg"
 	},
 	"/assets/aistudio/Screenshot_20261104-132856_WebNa_d71aa2b4.jpg": {
 		"type": "image/jpeg",
 		"etag": "\"20570-2Iw4A8MjeOEmjXhIa6trsma4oUU\"",
-		"mtime": "2026-11-05T06:23:14.279Z",
+		"mtime": "2026-11-05T06:43:02.743Z",
 		"size": 132464,
 		"path": "../public/assets/aistudio/Screenshot_20261104-132856_WebNa_d71aa2b4.jpg"
-	},
-	"/assets/aistudio/Screenshot_20261105-075913_WebNa_23ab3a8b.jpg": {
-		"type": "image/jpeg",
-		"etag": "\"88d2-gfX8w4a5Fw6TnXmxQ7Wu45J3WbA\"",
-		"mtime": "2026-11-05T06:23:14.280Z",
-		"size": 35026,
-		"path": "../public/assets/aistudio/Screenshot_20261105-075913_WebNa_23ab3a8b.jpg"
 	},
 	"/assets/aistudio/Screenshot_20261104-140212_Chrome_15424a24.jpg": {
 		"type": "image/jpeg",
 		"etag": "\"4ff0a-HVUKZQRQGwDwWwK6UKKzAtc3sls\"",
-		"mtime": "2026-11-05T06:23:14.280Z",
+		"mtime": "2026-11-05T06:43:02.744Z",
 		"size": 327434,
 		"path": "../public/assets/aistudio/Screenshot_20261104-140212_Chrome_15424a24.jpg"
+	},
+	"/assets/aistudio/Screenshot_20261105-075913_WebNa_23ab3a8b.jpg": {
+		"type": "image/jpeg",
+		"etag": "\"88d2-gfX8w4a5Fw6TnXmxQ7Wu45J3WbA\"",
+		"mtime": "2026-11-05T06:43:02.744Z",
+		"size": 35026,
+		"path": "../public/assets/aistudio/Screenshot_20261105-075913_WebNa_23ab3a8b.jpg"
 	},
 	"/assets/aistudio/Screenshot_20261104-141416_Chrome_f3aefbfc.jpg": {
 		"type": "image/jpeg",
 		"etag": "\"2c608-OevgPHg6W3PJO6fLYDCJ/cDz9ng\"",
-		"mtime": "2026-11-05T06:23:14.280Z",
+		"mtime": "2026-11-05T06:43:02.745Z",
 		"size": 181768,
 		"path": "../public/assets/aistudio/Screenshot_20261104-141416_Chrome_f3aefbfc.jpg"
 	},
 	"/assets/aistudio/Screenshot_20261105-090447_Chrome_34c80a83.jpg": {
 		"type": "image/jpeg",
 		"etag": "\"75eed-ng7riEnmqtCXyQUqXjW9fhnPELc\"",
-		"mtime": "2026-11-05T06:23:14.280Z",
+		"mtime": "2026-11-05T06:43:02.744Z",
 		"size": 483053,
 		"path": "../public/assets/aistudio/Screenshot_20261105-090447_Chrome_34c80a83.jpg"
 	},
 	"/assets/aistudio/Screenshot_20261024-111606_Chrome_259b5986.jpg": {
 		"type": "image/jpeg",
 		"etag": "\"aa9df-leY+jMEV52etbUZ9DMS6IXncqDo\"",
-		"mtime": "2026-11-05T06:23:14.279Z",
+		"mtime": "2026-11-05T06:43:02.744Z",
 		"size": 698847,
 		"path": "../public/assets/aistudio/Screenshot_20261024-111606_Chrome_259b5986.jpg"
 	},
-	"/assets/aistudio/Screenshot_20261031-214753_Max_Browser_f420aa33.jpg": {
+	"/assets/aistudio/Screenshot_20261105-094113_Chrome_08fcf82d.jpg": {
 		"type": "image/jpeg",
-		"etag": "\"9aa54-2oRCI9/g6BO6DQQ1fFwHqhHnRGc\"",
-		"mtime": "2026-11-05T06:23:14.279Z",
-		"size": 633428,
-		"path": "../public/assets/aistudio/Screenshot_20261031-214753_Max_Browser_f420aa33.jpg"
+		"etag": "\"66afc-c2FbVqevencRgVPBBWnOq2Fqfto\"",
+		"mtime": "2026-11-05T06:43:02.744Z",
+		"size": 420604,
+		"path": "../public/assets/aistudio/Screenshot_20261105-094113_Chrome_08fcf82d.jpg"
 	},
 	"/assets/aistudio/Screenshot_20261031-214706_Max_Browser_6426eca5.jpg": {
 		"type": "image/jpeg",
 		"etag": "\"cd8ce-Ak3YmUnqZZPbJo9OUV1xfRffBRs\"",
-		"mtime": "2026-11-05T06:23:14.280Z",
+		"mtime": "2026-11-05T06:43:02.743Z",
 		"size": 841934,
 		"path": "../public/assets/aistudio/Screenshot_20261031-214706_Max_Browser_6426eca5.jpg"
 	},
 	"/videos/movie_300.mp4": {
 		"type": "video/mp4",
 		"etag": "\"2a1519-5SMFKT007zq0gF4FAL6qkJrL/4E\"",
-		"mtime": "2026-11-05T06:23:14.279Z",
+		"mtime": "2026-11-05T06:43:02.742Z",
 		"size": 2757913,
 		"path": "../public/videos/movie_300.mp4"
+	},
+	"/assets/aistudio/Screenshot_20261031-214753_Max_Browser_f420aa33.jpg": {
+		"type": "image/jpeg",
+		"etag": "\"9aa54-2oRCI9/g6BO6DQQ1fFwHqhHnRGc\"",
+		"mtime": "2026-11-05T06:43:02.743Z",
+		"size": 633428,
+		"path": "../public/assets/aistudio/Screenshot_20261031-214753_Max_Browser_f420aa33.jpg"
 	},
 	"/assets/aistudio/markup_edited__1__f413f9b0.png": {
 		"type": "image/png",
 		"etag": "\"31f18f-G5s9bwmBkyXH6aXSI0/8Jn01t7M\"",
-		"mtime": "2026-11-05T06:23:14.282Z",
+		"mtime": "2026-11-05T06:43:02.746Z",
 		"size": 3273103,
 		"path": "../public/assets/aistudio/markup_edited__1__f413f9b0.png"
 	}
