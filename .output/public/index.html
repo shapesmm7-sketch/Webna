@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>WebNa Browser</title>
+    <meta name="description" content="WebNa: fast mobile browser with search engines, worldwide news, saved links and media player." />
+    <meta name="theme-color" content="#c25e00" />
+    <script>
+      window.__IS_CAPACITOR__ = true;
+      // Ensure hash route is set to #/ for hash history on Android WebView
+      try {
+        if (!window.location.hash || window.location.hash === "#") {
+          window.location.hash = "#/";
+        }
+      } catch (e) {}
+    </script>
+    <link rel="stylesheet" href="./assets/styles-B0xfFNQD.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="./assets/index-BJzDSR5r.js"></script>
+  </body>
+</html>

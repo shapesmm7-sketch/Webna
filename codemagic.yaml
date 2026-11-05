@@ -1,0 +1,32 @@
+workflows:
+  android-workflow:
+    name: WebNa Android App
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    environment:
+      node: 22
+      java: 21
+    scripts:
+      - name: Install dependencies
+        script: |
+          npm install --legacy-peer-deps
+      - name: Build web application and prepare Android assets
+        script: |
+          npm run build
+          node scripts/prepare-android.mjs
+      - name: Sync Android project
+        script: |
+          npx cap sync android
+          node scripts/prepare-android.mjs
+      - name: Build Android APK
+        script: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+    artifacts:
+      - android/app/build/outputs/**/*.apk
+      - android/app/build/outputs/**/mapping.txt
+    publishing:
+      email:
+        recipients:
+          - musichub661@gmail.com

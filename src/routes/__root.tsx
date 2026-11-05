@@ -1,0 +1,212 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  Outlet,
+  Link,
+  createRootRouteWithContext,
+  useRouter,
+  HeadContent,
+  Scripts,
+  type ErrorComponentProps,
+} from "@tanstack/react-router";
+import { useEffect, type ReactNode } from "react";
+import { Toaster } from "sonner";
+
+import appCss from "../styles.css?url";
+import { reportLovableError } from "../lib/lovable-error-reporting";
+
+function NotFoundComponent() {
+  const router = useRouter();
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      try {
+        router.navigate({ to: "/", replace: true });
+      } catch {
+        // ignore
+      }
+    }
+  }, [router]);
+
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+      <div className="max-w-md text-center">
+        <h1 className="text-xl font-bold text-foreground">WebNa</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Loading application...
+        </p>
+        <div className="mt-4">
+          <Link
+            to="/"
+            className="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-xs"
+          >
+            Open Home
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ErrorComponent({ error, reset }: ErrorComponentProps) {
+  const router = useRouter();
+  const msg = error instanceof Error ? error.message : String(error);
+  const isBenign =
+    msg.includes("reading 'window'") ||
+    msg.includes("reading 'parentNode'") ||
+    msg.includes("<!doctype html>") ||
+    msg.includes("JSON.parse") ||
+    msg.includes("Unexpected token");
+
+  if (!isBenign) {
+    console.error(error);
+  }
+
+  useEffect(() => {
+    if (
+      msg.includes("reading 'window'") ||
+      msg.includes("reading 'parentNode'") ||
+      msg.includes("<!doctype html>") ||
+      msg.includes("JSON.parse") ||
+      msg.includes("Unexpected token")
+    ) {
+      const t = setTimeout(() => {
+        try {
+          router.invalidate();
+          reset();
+        } catch {
+          // ignore
+        }
+      }, 50);
+      return () => clearTimeout(t);
+    }
+    reportLovableError(error, { boundary: "tanstack_root_error_component" });
+  }, [error, msg, reset, router]);
+
+  if (
+    msg.includes("reading 'window'") ||
+    msg.includes("reading 'parentNode'") ||
+    msg.includes("<!doctype html>") ||
+    msg.includes("JSON.parse") ||
+    msg.includes("Unexpected token")
+  ) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background px-4">
+        <div className="max-w-md text-center">
+          <h1 className="text-xl font-bold text-foreground">WebNa</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Resuming session...
+          </p>
+          <button
+            onClick={() => {
+              try {
+                router.invalidate();
+                reset();
+              } catch {
+                // ignore
+              }
+            }}
+            className="mt-4 inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground"
+          >
+            Reload Browser
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+      <div className="max-w-md text-center">
+        <h1 className="text-xl font-semibold tracking-tight text-foreground">
+          This page didn't load
+        </h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Something went wrong on our end. You can try refreshing or head back
+          home.
+        </p>
+        <div className="mt-6 flex flex-wrap justify-center gap-2">
+          <button
+            onClick={() => {
+              router.invalidate();
+              reset();
+            }}
+            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+          >
+            Try again
+          </button>
+          <a
+            href="/"
+            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+          >
+            Go home
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
+  {
+    head: () => ({
+      meta: [
+        { charSet: "utf-8" },
+        {
+          name: "viewport",
+          content:
+            "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no",
+        },
+        { title: "WebNa Browser" },
+        {
+          name: "description",
+          content:
+            "Fast mobile browser with search engines, worldwide news, saved links and media player.",
+        },
+        { property: "og:title", content: "WebNa Browser" },
+        {
+          property: "og:description",
+          content:
+            "Fast mobile browser with search engines, worldwide news, saved links and media player.",
+        },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary" },
+      ],
+      links: [
+        {
+          rel: "stylesheet",
+          href: appCss,
+        },
+        { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      ],
+    }),
+    shellComponent: RootShell,
+    component: RootComponent,
+    notFoundComponent: NotFoundComponent,
+    errorComponent: ErrorComponent,
+  },
+);
+
+function RootShell({ children }: { children: ReactNode }) {
+  return (
+    <html lang="en">
+      <head>
+        <HeadContent />
+      </head>
+      <body>
+        {children}
+        <Scripts />
+      </body>
+    </html>
+  );
+}
+
+function RootComponent() {
+  const { queryClient } = Route.useRouteContext();
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+      <Outlet />
+      <Toaster position="top-center" richColors closeButton />
+    </QueryClientProvider>
+  );
+}
